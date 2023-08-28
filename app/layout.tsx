@@ -1,12 +1,16 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
-export default function RootLayout({ children, header, footer }) {
+interface LayoutProps {
+  children: ReactNode;
+}
+
+export default function RootLayout({ children } : LayoutProps) {
   return (
     <html lang="en">
       <body>
-        <header>{header}</header>
+        <header>[header]</header>
         <main>{children}</main>
-        <footer>{footer}</footer>
+        <footer>[footer]</footer>
       </body>
     </html>
   );
