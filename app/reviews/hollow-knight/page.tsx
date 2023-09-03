@@ -1,10 +1,11 @@
 import React from "react";
+import Heading from "../../components/Heading";
 
 export default function ReviewsPage() {
   return (
     <React.Fragment>
-        <h1>Hollow Knight</h1>
-        <p>review for Hollow Knight</p>
+    <Heading text={'Hollow Knight'}/>
+      <p>review for Hollow Knight</p>
     </React.Fragment>
   );
 }
