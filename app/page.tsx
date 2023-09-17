@@ -1,8 +1,7 @@
 import Link from "next/link";
 import React from "react";
-import { getFeaturedReview } from "../lib/reviews";
-
-import Heading from "./components/Heading";
+import { getFeaturedReview } from "@/lib/reviews";
+import Heading from "@/app/components/Heading";
 
 export default async function HomePage() {
   const review = await getFeaturedReview();
