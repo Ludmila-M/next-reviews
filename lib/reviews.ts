@@ -12,6 +12,7 @@ interface CmsItem {
 export interface Review {
   slug: string;
   title: string;
+  subtitle: string;
   date: string;
   image: string;
 }
@@ -20,18 +21,13 @@ export interface FullReview extends Review {
   body: string;
 }
 
-const CMS_URL = 'http://localhost:1337';
-
-export async function getFeaturedReview(): Promise<Review> {
-  const reviews = await getReviews();
-  return reviews[0];
-}
+const CMS_URL = "http://localhost:1337";
 
 export async function getReview(slug: string): Promise<FullReview> {
   const { data } = await fetchReviews({
     filters: { slug: { $eq: slug } },
-    fields: ['slug', 'title', 'subtitle', 'publishedAt', 'body'],
-    populate: { image: { fields: ['url'] } },
+    fields: ["slug", "title", "subtitle", "publishedAt", "body"],
+    populate: { image: { fields: ["url"] } },
     pagination: { pageSize: 1, withCount: false },
   });
   const item = data[0];
@@ -41,29 +37,29 @@ export async function getReview(slug: string): Promise<FullReview> {
   };
 }
 
-export async function getReviews(): Promise<Review[]> {
+export async function getReviews(pageSize: number): Promise<Review[]> {
   const { data } = await fetchReviews({
-    fields: ['slug', 'title', 'subtitle', 'publishedAt'],
-    populate: { image: { fields: ['url'] } },
-    sort: ['publishedAt:desc'],
-    pagination: { pageSize: 6 },
+    fields: ["slug", "title", "subtitle", "publishedAt"],
+    populate: { image: { fields: ["url"] } },
+    sort: ["publishedAt:desc"],
+    pagination: { pageSize },
   });
   return data.map(toReview);
 }
 
 export async function getSlugs(): Promise<string[]> {
   const { data } = await fetchReviews({
-    fields: ['slug'],
-    sort: ['publishedAt:desc'],
+    fields: ["slug"],
+    sort: ["publishedAt:desc"],
     pagination: { pageSize: 100 },
   });
   return data.map((item: CmsItem) => item.attributes.slug);
 }
 
-
 async function fetchReviews(parameters: any) {
-  const url = `${CMS_URL}/api/reviews?`
-    + qs.stringify(parameters, { encodeValuesOnly: true });
+  const url =
+    `${CMS_URL}/api/reviews?` +
+    qs.stringify(parameters, { encodeValuesOnly: true });
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`CMS returned ${response.status} for ${url}`);
@@ -76,7 +72,8 @@ function toReview(item: CmsItem): Review {
   return {
     slug: attributes.slug,
     title: attributes.title,
-    date: attributes.publishedAt.slice(0, 'yyyy-mm-dd'.length),
+    subtitle: attributes.subtitle,
+    date: attributes.publishedAt.slice(0, "yyyy-mm-dd".length),
     image: CMS_URL + attributes.image.data.attributes.url,
   };
 }
